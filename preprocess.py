@@ -1,7 +1,7 @@
 import os
 import cv2
 
-def save_frames_as_images_with_lower_frame_rate(input_file, output_path, frame_rate_divisor=2):
+def save_frames(input_file, output_path, frame_rate_divisor=2):
     """
     동영상 파일의 frame rate를 낮추어 프레임을 이미지로 저장하는 함수
     
@@ -60,4 +60,4 @@ if __name__ == '__main__':
 
     # frame rate를 낮춰 프레임을 이미지로 저장 (frame_rate_divisor를 조정하여 frame rate 조절)
     frame_rate_divisor = 5  # frame rate를 낮추기 위한 간격
-    save_frames_as_images_with_lower_frame_rate(input_video_file, output_image_path, frame_rate_divisor)
+    save_frames(input_video_file, output_image_path, frame_rate_divisor)
