@@ -4,6 +4,8 @@ import pickle
 import numpy as np
 from tqdm import tqdm
 
+import utils
+
 class Annotator(object):
     def __init__(self, path):
         self.path = path
@@ -36,7 +38,7 @@ class Annotator(object):
         if event == cv2.EVENT_LBUTTONDOWN:
             for key in self.image_points[self.image_index]:
                 point = self.image_points[self.image_index][key]
-                if abs(point[0] - x) < 5 and abs(point[1] - y) < 5:
+                if abs(point[0] - x) < 10 and abs(point[1] - y) < 10:
                     self.selected_point = point
                     self.selected_point_key = key
                     break
@@ -49,13 +51,6 @@ class Annotator(object):
         elif event == cv2.EVENT_MOUSEMOVE:
             if self.selected_point is not None:
                 self.selected_point = (x, y)
-        elif event == cv2.EVENT_RBUTTONDOWN:
-            self.image_points[self.image_index].append((x, y))
-        elif event == cv2.EVENT_MBUTTONDOWN:
-            for point in self.image_points[self.image_index]:
-                if abs(point[0] - x) < 5 and abs(point[1] - y) < 5:
-                    self.image_points[self.image_index].remove(point)
-                    break
     
     def draw_points(self, img):
         for key in self.image_points[self.image_index].keys():
@@ -91,11 +86,6 @@ class Annotator(object):
         # 텍스트를 추가하여 각도 정보를 시각화
         cv2.putText(img, angle_text, (self.image_points[self.image_index]['p2'][0] - 40, self.image_points[self.image_index]['p2'][1] + 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 4)
 
-    def annotate_image(self):
-        # ... (이전 코드와 동일) ...
-
-        cv2.destroyAllWindows()
-        return self.image_points
     
     def annotate_image(self):
         while self.image_index < len(self.image_list):
@@ -119,7 +109,7 @@ class Annotator(object):
             elif key == 13:  # 'enter' key
                 if len(self.image_points[self.image_index]) == 3:
                     with open(f'{self.path}/anno/{self.files[self.image_index].split(".")[0]}.pickle', 'wb') as f:
-                        pickle.dump({'points':self.image_points, 'angle':self.calc_angle()}, f, protocol=pickle.HIGHEST_PROTOCOL)
+                        pickle.dump({'points':self.image_points[self.image_index], 'angle':self.calc_angle()}, f, protocol=pickle.HIGHEST_PROTOCOL)
                     print(f'{self.image_index+1}/{len(self.image_list)}: {self.image_points[self.image_index]}, angle: {self.calc_angle():.2f}°')
                     self.image_index += 1
                     self.image_points.append(self.image_points[self.image_index - 1].copy())
@@ -132,8 +122,8 @@ class Annotator(object):
     
     
 if __name__ == '__main__':
-    date = '2023-07-26'
-    path = f'./data/{date}'
+    args = utils.parse_args()
+    path = f'./data/{args.date}'
     annotator = Annotator(path)
     annotator.load_imgs()
     
