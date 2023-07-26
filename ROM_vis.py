@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import utils
 
 def plot_ROMs(ROMs, args):
-    t = np.arange(0, int(len(ROMs)/6), step=1/6)
+    t = np.arange(0, len(ROMs)/6, step=1/6)
     plt.plot(t, ROMs)
     plt.xlabel('Time (sec)')
     plt.ylabel('ROM (°)')
