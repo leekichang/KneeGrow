@@ -1,5 +1,8 @@
 import os
 import cv2
+from tqdm import tqdm
+
+import utils
 
 def save_frames(input_file, output_path, frame_rate_divisor=2):
     """
@@ -51,13 +54,13 @@ def save_frames(input_file, output_path, frame_rate_divisor=2):
     print(f"프레임별 이미지 저장이 완료되었습니다. 총 {n_frames}개의 이미지가 저장되었습니다.")
 
 if __name__ == '__main__':
-    path = f'./data/'
-    date = f'2023-07-26'
-
+    args = utils.parse_args()
+    path = f'./data/{args.date}'
+    video_files = [os.path.join(f'{path}/videos', file).replace("\\", "/") for file in os.listdir(f'{path}/videos/')]
     # 동영상 파일 경로와 이미지 저장 디렉토리 경로 설정
-    input_video_file = f'{path}/{date}/videos/IMG_4174.mov'
-    output_image_path = f'{path}/{date}/frames/'
-
-    # frame rate를 낮춰 프레임을 이미지로 저장 (frame_rate_divisor를 조정하여 frame rate 조절)
-    frame_rate_divisor = 5  # frame rate를 낮추기 위한 간격
-    save_frames(input_video_file, output_image_path, frame_rate_divisor)
+    for file in video_files:
+        print(file)
+        output_image_path = f'{path}/frames/'
+        # frame rate를 낮춰 프레임을 이미지로 저장 (frame_rate_divisor를 조정하여 frame rate 조절)
+        frame_rate_divisor = 5  # frame rate를 낮추기 위한 간격
+        save_frames(file, output_image_path, frame_rate_divisor)
